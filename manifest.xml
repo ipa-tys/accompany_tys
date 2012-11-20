@@ -11,7 +11,9 @@
   <depend package="rospy"/>
   <depend package="roscpp"/>
   <depend package="std_msgs"/>
+  <depend package="visualization_msgs"/>
   <depend package="cob_script_server"/>
+  <depend package="accompany_uva_msg"/>
   <depend package="tf"/>
 
 </package>
