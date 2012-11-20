@@ -1,0 +1,19 @@
+<package>
+  <description brief="accompany">
+
+     accompany
+
+  </description>
+  <author>tys</author>
+  <license>BSD</license>
+  <review status="unreviewed" notes=""/>
+  <url>http://ros.org/wiki/accompany</url>
+  <depend package="rospy"/>
+  <depend package="roscpp"/>
+  <depend package="std_msgs"/>
+  <depend package="cob_script_server"/>
+  <depend package="tf"/>
+
+</package>
+
+

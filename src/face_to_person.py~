@@ -1,0 +1,28 @@
+#!/usr/bin/env python
+import roslib; roslib.load_manifest('accompany')
+import rospy
+from std_msgs.msg import Float64
+from geometry_msgs.msg import Pose2D
+from simple_script_server import *
+from tf import TransformListener
+
+sss=simple_script_server()
+
+def pos_callback(data):
+    # data.data
+    rospy.loginfo("on updated pos, face robot towards guy...")
+
+    t = self.tf.getLatestCommonTime("/base_link", "/map")
+    position, quaternion = self.tf.lookupTransform("/base_link", "/map", t)
+    print position
+
+    vector = [0,0,data.theta]
+    sss.move_base_rel(vector)
+
+def face_to_person():
+    rospy.init_node('face_to_person')
+    rospy.Subscriber("pos_of_guy", Float64, pos_callback)
+    rospy.spin()
+
+if __name__ == '__main__':
+    face_to_person()
