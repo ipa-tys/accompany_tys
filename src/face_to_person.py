@@ -12,6 +12,9 @@ import math
 from visualization_msgs.msg import Marker
 from visualization_msgs.msg import MarkerArray
 
+## reality: make sure that person to align to is not robot itself
+## align to person with lowest id (except robot) 
+
 sss=simple_script_server()
 
 class FTPNode:
@@ -21,7 +24,7 @@ class FTPNode:
         self.tt = Transformer()
         rospy.Subscriber("/trackedHumans", TrackedHumans, self.pos_callback)
         self.publisher = rospy.Publisher("directionmarker_array", MarkerArray)
-        self.markerArray = MarkerArray()
+
 
     def pos_callback(self, data):
         rospy.loginfo("on updated pos, face robot towards guy...")
@@ -37,28 +40,39 @@ class FTPNode:
                 print pp.point
 
                 phi = math.atan2(pp.point.y, pp.point.x)
-                # sss.move_base_rel("base", [0,0,phi])
+                sss.move_base_rel("base", [0,0,phi])
                 print phi*180/math.pi
-
-                self.marker = Marker()
-                self.marker.header.frame_id = "/map"
-                self.marker.type = self.marker.ARROW
-                self.marker.action = self.marker.ADD
-                self.marker.scale.x = 1
-                self.marker.scale.y = 1
-                self.marker.scale.z = 1
-                self.marker.color.a = 1.0
-                self.marker.color.r = 1.0
-                self.marker.color.g = 1.0
-                self.marker.color.b = 0.0
-                # self.marker.points = [[0,0,0],[1,0,0]]
-                self.marker.pose.position.x = 1
-                self.marker.pose.position.y = 0
-                self.marker.pose.position.z = 1
-                self.marker.pose.orientation.w = 1
-                self.markerArray.markers = []
-                self.markerArray.markers.append(self.marker)
-                self.publisher.publish(self.markerArray)
+                
+                markerArray = MarkerArray()
+                marker = Marker()
+                marker.header.stamp = rospy.Time();    
+                marker.ns = "my_namespace";
+                marker.id = 0;  
+                marker.header.frame_id = "/base_link"
+                marker.type = marker.ARROW
+                marker.action = marker.ADD
+                marker.scale.x = .1
+                marker.scale.y = .1
+                marker.scale.z = .1
+                marker.color.a = 1.0
+                marker.color.r = 1.0
+                marker.color.g = 1.0
+                marker.color.b = 0.0
+                p1 = Point()
+                p1.x = 0
+                p1.y = 0
+                p1.z = 0
+                p2 = Point()
+                p2.x = pp.point.x
+                p2.y = pp.point.y
+                p2.z = 0
+                marker.points = [p1,p2]
+                #marker.pose.position.x = 1
+                #marker.pose.position.y = 0
+                #marker.pose.position.z = 1
+                #marker.pose.orientation.w = 1
+                markerArray.markers.append(marker)
+                self.publisher.publish(markerArray)
                 print "try ended"
             except Exception as e:
                 print e
